@@ -188,7 +188,7 @@ public class Fds1Service {
     }
 
     private static SimpleFeatureBuilder createCommonFeatureBuilder(DataStore store, Transaction transaction, Row row, String groupId, String plotNo,
-                                                                   String module, int corner, Integer depth, Integer coverClassCode, SimpleFeatureType type) {
+                                                                   String module, String corner, Integer depth, Integer coverClassCode, SimpleFeatureType type) {
         VibiService.testForeignKeyExists(store, transaction, row, PLOT_TYPE, plotNo);
         VibiService.testForeignKeyExists(store, transaction, row, MODULE_TYPE, module);
         VibiService.testForeignKeyExists(store, transaction, row, CORNER_TYPE, corner);
@@ -212,7 +212,7 @@ public class Fds1Service {
     }
 
     private static void createAndStoreSpeciesFeature(DataStore store, Transaction transaction, Row row, String groupId, String plotNo, String module,
-                                                     int corner, String species, Integer depth, Integer coverClassCode) {
+                                                     String corner, String species, Integer depth, Integer coverClassCode) {
         species = VibiService.testSpeciesForeignKey(store, transaction, row, SPECIES_TYPE, species);
         String id = UUID.randomUUID().toString();
         SimpleFeatureBuilder featureBuilder = createCommonFeatureBuilder(
@@ -239,7 +239,7 @@ public class Fds1Service {
         Store.persistFeature(store, transaction, featureBuilder.buildFeature(id));
     }
 
-    private static void createAndStoreInfoFeature(DataStore store, Transaction transaction, Row row, String plotNo, String module, int corner,
+    private static void createAndStoreInfoFeature(DataStore store, Transaction transaction, Row row, String plotNo, String module, String corner,
                                                   String info, Integer depth, Integer coverClassCode) {
         String id = UUID.randomUUID().toString();
         SimpleFeatureBuilder featureBuilder = createCommonFeatureBuilder(
@@ -256,11 +256,14 @@ public class Fds1Service {
             Cell module = row.getCell(index, Row.RETURN_BLANK_AS_NULL);
             Cell corner = row.getCell(index + 1, Row.RETURN_BLANK_AS_NULL);
             if (module == null || corner == null) {
-                moreModulesAndCorners = false;
                 continue;
             }
+            String moduleNumber = extractString(module);
+            if (moduleNumber.equalsIgnoreCase("R")) {
+                moreModulesAndCorners = false;
+            }
             modulesAndCorners.add(new ModuleAndCorner(extractString(module),
-                    extractInteger(corner), index, index + 1));
+                    extractString(corner), index, index + 1));
             index += 2;
         }
         return modulesAndCorners;
@@ -277,11 +280,11 @@ public class Fds1Service {
     private static final class ModuleAndCorner {
 
         String module;
-        int corner;
+        String corner;
         int depthColumnIndex;
         int coverClassCodeIndex;
 
-        public ModuleAndCorner(String module, int corner, int depthColumnIndex, int coverClassCodeIndex) {
+        public ModuleAndCorner(String module, String corner, int depthColumnIndex, int coverClassCodeIndex) {
             this.module = module;
             this.corner = corner;
             this.depthColumnIndex = depthColumnIndex;

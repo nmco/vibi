@@ -114,7 +114,7 @@ CREATE TABLE module (
 INSERT INTO module VALUES (1), (2), (3), (4), (5), (6), (7), (8), (9), (10);
 
 CREATE TABLE corner (
-  corner int4 PRIMARY KEY
+  corner text PRIMARY KEY
 );
 
 INSERT INTO corner VALUES (1), (2), (3), (4);
@@ -301,7 +301,7 @@ CREATE TABLE plot_module_herbaceous (
   fid text PRIMARY KEY,
   plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
   module_id text references module(module_id),
-  corner int4 references corner(corner),
+  corner text references corner(corner),
   depth integer references depth(depth),
   species text references species(scientific_name),
   cover_class_code integer references cover_midpoint_lookup(cover_code),
@@ -313,7 +313,7 @@ CREATE TABLE plot_module_herbaceous_info (
   fid text PRIMARY KEY,
   plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
   module_id text references module(module_id),
-  corner int4 references corner(corner),
+  corner text references corner(corner),
   depth integer references depth(depth),
   info text,
   cover_class_code integer references cover_midpoint_lookup(cover_code)
@@ -372,7 +372,7 @@ CREATE TABLE biomass_raw (
   plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
   date_time timestamptz,
   module_id text references module(module_id),
-  corner int4 references corner(corner),
+  corner text references corner(corner),
   sample_id int4,
   area_sampled numeric,
   weight_with_bag numeric,
