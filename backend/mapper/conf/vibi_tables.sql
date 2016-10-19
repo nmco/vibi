@@ -34,7 +34,6 @@ DROP TABLE IF EXISTS shade CASCADE;
 DROP TABLE IF EXISTS reduced_fds2_dbh_index_basal_area CASCADE;
 DROP TABLE IF EXISTS rule CASCADE;
 
-
 CREATE TABLE veg_class (
   veg_class text PRIMARY KEY
 );
@@ -227,7 +226,8 @@ INSERT INTO oh_status VALUES ('adventive'), ('cryptogeni'), ('native');
 
 -- From "ENTER PLOT INFO" Tab. Ignore columns after column "BM"
 CREATE TABLE plot (
-  Plot_No text PRIMARY KEY,
+  Plot_Id text PRIMARY KEY,
+  Plot_No text,
   Project_Name text,
   Plot_Name text,
   Project_Label text,
@@ -299,7 +299,7 @@ CREATE TABLE plot (
 
 CREATE TABLE plot_module_herbaceous (
   fid text PRIMARY KEY,
-  plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
+  plot_id text references plot(plot_id) ON UPDATE CASCADE ON DELETE CASCADE,
   module_id text references module(module_id),
   corner text references corner(corner),
   depth integer references depth(depth),
@@ -311,7 +311,7 @@ CREATE TABLE plot_module_herbaceous (
 
 CREATE TABLE plot_module_herbaceous_info (
   fid text PRIMARY KEY,
-  plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
+  plot_id text references plot(plot_id) ON UPDATE CASCADE ON DELETE CASCADE,
   module_id text references module(module_id),
   corner text references corner(corner),
   depth integer references depth(depth),
@@ -322,7 +322,7 @@ CREATE TABLE plot_module_herbaceous_info (
 CREATE TABLE fds1_species_misc_info (
   fid text PRIMARY KEY,
   species text references species(scientific_name),
-  plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
+  plot_id text references plot(plot_id) ON UPDATE CASCADE ON DELETE CASCADE,
   module_id text references module(module_id),
   voucher_no text,
   comment text,
@@ -334,7 +334,7 @@ CREATE TABLE fds1_species_misc_info (
 
 CREATE TABLE plot_module_woody_raw (
   fid text PRIMARY KEY,
-  plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
+  plot_id text references plot(plot_id) ON UPDATE CASCADE ON DELETE CASCADE,
   sub numeric,
   module_id text references module(module_id),
   species text references species(scientific_name),
@@ -347,7 +347,7 @@ CREATE TABLE plot_module_woody_raw (
 CREATE TABLE fds2_species_misc_info (
   fid text PRIMARY KEY,
   species text references species(scientific_name),
-  plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
+  plot_id text references plot(plot_id) ON UPDATE CASCADE ON DELETE CASCADE,
   module_id text references module(module_id),
   voucher_no text,
   comment text,
@@ -369,7 +369,7 @@ INSERT INTO reduced_fds2_dbh_index_basal_area (dbh_class_index, basal_area) VALU
 --includes calculated fields
 CREATE TABLE biomass_raw (
   fid text PRIMARY KEY,
-  plot_no text references plot(plot_no) ON UPDATE CASCADE ON DELETE CASCADE,
+  plot_id text references plot(plot_id) ON UPDATE CASCADE ON DELETE CASCADE,
   date_time timestamptz,
   module_id text references module(module_id),
   corner text references corner(corner),
